@@ -82,6 +82,7 @@ journals %>%
 # ?dplyr::select 查詢select
 # select(.data, ...)
 # tbl.
+# install.packages("psych")
 # ?psych::pairs.panels
 ```
 
