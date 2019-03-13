@@ -62,7 +62,6 @@ Journals %>%
     citeprice=price/citations
     )->
   journals
-
 ```
 
 ```{r ch2-summary, results='hide'}
