@@ -78,7 +78,10 @@ library(psych)
 journals %>% 
   select(citeprice,subs) %>%
   pairs.panels()
+
 # ?dplyr::select 查詢select
+# select(.data, ...)
+# tbl.
 ```
 
 
