@@ -76,12 +76,28 @@ summary(journals)
 ```{r ols-paircorr-r, echo=TRUE}
 library(psych)
 journals %>% 
-  select(citeprice,subs) %>%
+  select(citeprice,subs) #%>%
   pairs.panels()
 
 # ?dplyr::select 查詢select
 # select(.data, ...)
 # tbl.
+# ?psych::pairs.panels
+```
+
+```{r}
+# traditional usage
+select(journals,citeprice,subs)->
+  tempDF
+# pipe expression
+journals %>%
+  select(citeprice,subs)->
+  tempDF
+```
+
+```{r}
+journals %>%
+  select
 ```
 
 
