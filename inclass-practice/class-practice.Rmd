@@ -152,12 +152,37 @@ a=="NA"
 #traditional
 lm
 
+#pipe
 
 journals %>% 
-  lm(log(subs)~log(citeprice),data=.) -> model1
+  lm(log(subs)~log(citeprice),data=.) -> model1 #model1
 
 journals %>%
   lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model2
+```
+
+##broom
+
+ * tidy() #估計係數
+ 
+ * augment()
+  
+ * glance() #報表診斷
+
+```{r} 
+library(broom)
+```
+
+```{r} 
+tidy(model1) #要有library(broom)的套件才可使用
+```
+
+```{r} 
+augment(model1) #要有library(broom)的套件才可使用
+```
+
+```{r} 
+glance(model1) #要有library(broom)的套件才可使用
 ```
 
 ## 模型比較
