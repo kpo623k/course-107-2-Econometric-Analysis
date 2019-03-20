@@ -147,6 +147,19 @@ a<-NA #NA:不知道真相
 is.na(a)
 a=="NA"
 ```
+
+```{r}
+#traditional
+lm
+
+
+journals %>% 
+  lm(log(subs)~log(citeprice),data=.) -> model1
+
+journals %>%
+  lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model2
+```
+
 ## 模型比較
 
 ```{r ols-comp-r, results='hide', warning=FALSE}
