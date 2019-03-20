@@ -206,13 +206,34 @@ stargazer(model_1, model_2,
           align=TRUE)
 ```          
 
+
+standard error : 原始作法，使用矩陣
+```{r}
+stargazer(model_1, model_2, 
+          se=list(
+            model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
+          type="html",   #html : 網頁形式
+          align=TRUE)  #list後要有括號  
+
+# ?stargazer:用法 -> "..."丟modle object
+# 有argument名稱，則不用照順序擺，若無argument名稱，則要按照順序擺放，詳情見help
+# 例如 按順序 -> f(5,3,2)表示f(x=5,y=3,z=2)或 不按順序 -> f(y=3,z=2,x=5)
+```
+
+standard error : tidy 1
 ```{r}
 tidy(model_1_coeftest)->model1CoeftestDF
 tidy(model_2_coeftest)->model2CoeftestDF
 ```
 
+```{r}
+stargazer(model_1, model_2, 
+          se=list(
+            model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
+          type="html",
+          align=TRUE)
+```
 
-          
 ## 模型比較
 
 ```{r ols-comp-r, results='hide', warning=FALSE}
