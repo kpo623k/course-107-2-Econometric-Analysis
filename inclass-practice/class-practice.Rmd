@@ -35,6 +35,7 @@ library("AER")
 library("ggplot2")
 library("dplyr")
 library("knitr")
+#引入資料
 ```
 
 
@@ -54,9 +55,9 @@ data("Journals")
 # 資料處理：產生新變數 dplyr::mutate
 
 ```{r}
-# if follow usage.
+# if follow usage,
 mutate(Journals,citeprice=price/citations)->journals
-# pipe expression,
+# pipe expression(%>%可提出，也就是說使用pipe_expression可把任何Function第一個Input(Journals)拿出放在前面),
 Journals %>% 
   mutate(
     citeprice=price/citations
