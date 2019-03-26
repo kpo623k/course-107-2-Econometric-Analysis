@@ -83,14 +83,17 @@ journals %>%
 # ?dplyr::select 查詢select
 # select(.data, ...)
 # tbl.
-# install.packages("psych")
-# ?psych::pairs.panels
+# 在Console打 install.packages("psych") 即可安裝套件
+# 查詢 ?psych::pairs.panels (pairs.panel是psych的一個function)
+# %>% (pipe)的優點在於可繼續串接
 ```
 
 ```{r}
 # traditional usage
-select(journals,citeprice,subs)->
-  tempDF
+select(journals,citeprice,subs)->tempDF
+#select dateframe裡面的變數名稱citeprice以及subs，並存檔為tempDF
+#dateframe in, dateframe out
+
 # pipe expression
 journals %>%
   select(citeprice,subs)->
@@ -98,14 +101,10 @@ journals %>%
 ```
 
 ```{r}
-journals %>%
-  select
-#
-```
-
-
-```{r ols-paircorr2-r}
-journals %>% 
+# traditional usage
+select(journals,citeprice,subs)->tempDF
+pairs.panels(e)
+```tw
   select(citeprice,subs) %>%
   mutate_all(log) %>%
   pairs.panels()
