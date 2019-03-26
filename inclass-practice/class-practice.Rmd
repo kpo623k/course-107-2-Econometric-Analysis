@@ -106,7 +106,7 @@ journals %>%
 # traditional usage
 select(journals,citeprice,subs)->tempDF
 pairs.panels(tempDF)
-#
+#傳統用法要先存檔(例如存為tempDF)，才可放入pairs.panels的括號內
 ```
 tw
   select(citeprice,subs) %>%
