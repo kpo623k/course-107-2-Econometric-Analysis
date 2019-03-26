@@ -108,6 +108,25 @@ select(journals,citeprice,subs)->tempDF
 pairs.panels(tempDF)
 #傳統用法要先存檔(例如存為tempDF)，才可放入pairs.panels的括號內
 ```
+
+```{r}
+# pipe expression (#77)
+journals %>%
+  select(citeprice,subs)->
+  tempDF
+tempDF %>%
+  pairs.panels()
+#pipe可一直接下去，不一定要另外存檔，只要下一個要用的東西，是上一個結果，即可直接串接
+
+#前一段產生的Output，是下一段"第一個"Input
+```
+
+```{r}
+journals %>% 
+  select(citeprice,subs) %>%
+  pairs.panels()
+```
+
 tw
   select(citeprice,subs) %>%
   mutate_all(log) %>%
