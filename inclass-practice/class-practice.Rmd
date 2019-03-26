@@ -127,15 +127,19 @@ journals %>%
   pairs.panels()
 ```
 
-tw
+```{r ols-paircorr2-r}
+#右偏且變數恆正，取ln會變得較為集中趨勢
+journals %>% 
   select(citeprice,subs) %>%
   mutate_all(log) %>%
   pairs.panels()
-
-# ?dplyr::mutate_all
+# 查詢 ?dplyr::mutate_all
+# .tbl->第一個Input,為dataframe
+# .funs->第二個Input,function
 # input/output都是dataframe
 # mutate_all(log)取log看分配
 ```
+
 
 > 為什麼取log後，兩者的相關度變高？它表示兩個變數變得更不獨立嗎？
 # ANS：兩者變數關連並沒有改變.......
