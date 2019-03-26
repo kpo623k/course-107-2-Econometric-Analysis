@@ -79,6 +79,7 @@ library(psych)
 journals %>% 
   select(citeprice,subs) %>%
   pairs.panels()
+# pipe expression
 
 # ?dplyr::select 查詢select
 # select(.data, ...)
@@ -91,8 +92,9 @@ journals %>%
 ```{r}
 # traditional usage
 select(journals,citeprice,subs)->tempDF
+
 #select dateframe裡面的變數名稱citeprice以及subs，並存檔為tempDF
-#dateframe in, dateframe out
+# dateframe in, dateframe out
 
 # pipe expression
 journals %>%
@@ -103,8 +105,10 @@ journals %>%
 ```{r}
 # traditional usage
 select(journals,citeprice,subs)->tempDF
-pairs.panels(e)
-```tw
+pairs.panels(tempDF)
+#
+```
+tw
   select(citeprice,subs) %>%
   mutate_all(log) %>%
   pairs.panels()
