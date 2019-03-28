@@ -173,7 +173,8 @@ a<-NA #NA:不知道真相
 
 ```{r}
 is.na(a)
-a=="NA"
+
+a=="NA" #要用NA-Function的公式->"is.na()"
 ```
 
 ```{r}
