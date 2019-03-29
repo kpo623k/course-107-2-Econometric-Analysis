@@ -179,13 +179,21 @@ a=="NA" #要用NA-Function的公式->"is.na()"
 
 ```{r}
 #traditional
-lm
+lm(log(subs)~log(citeprice),data=journals)
+#"~"表示迴歸模型的等號，用lm的usage寫法:lm(formula,data)
 
-#pipe
+#pipe1
+#把formula移出來 (提出前者的概念)
+log(subs)~log(citeprice) %>%
+  lm(data=journals)
 
+#pipe2
+#提出data的來源"journals"",而在data的位置放入"." (提出後者的概念)
 journals %>% 
-  lm(log(subs)~log(citeprice),data=.) -> model1 #model1
+  lm(log(subs)~log(citeprice),data=.) -> model1
 
+#比較價格高低時，在"同樣成立時間點"下的期刊，預期立足點一樣，控制一樣的立足點->條件獨立
+#多了一個控制的變數"foundingyear"->期刊成立在哪一年
 journals %>%
   lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model2
 ```
