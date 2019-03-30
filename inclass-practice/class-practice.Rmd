@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE)
 
 ```{r}
 library("AER")
-library("ggplot2")
+library("ggplot2") #繪圖軟件
 library("dplyr")
 library("knitr")
 #引入資料
@@ -76,6 +76,10 @@ summary(journals)
 
 ```{r ols-paircorr-r, echo=TRUE}
 library(psych)
+#select:選擇變數
+#mutate:新增變數
+#group_by:依照類變數分組，搭配
+#summarise:結果
 journals %>% 
   select(citeprice,subs) %>%
   pairs.panels()
@@ -189,37 +193,41 @@ log(subs)~log(citeprice) %>%
 
 #pipe2
 #提出data的來源"journals"",而在data的位置放入"." (提出後者的概念)
-journals %>% 
+journals %>%
   lm(log(subs)~log(citeprice),data=.) -> model1
-
 #比較價格高低時，在"同樣成立時間點"下的期刊，預期立足點一樣，控制一樣的立足點->條件獨立
 #多了一個控制的變數"foundingyear"->期刊成立在哪一年
 journals %>%
   lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model2
 ```
 
-##broom
+##broom -> 估計迴歸產生的output
+>summary(model1):可看model1的迴歸表
 
  * tidy() #估計係數
  
- * augment()
+ * augment() #
   
  * glance() #報表診斷
 
 ```{r} 
 library(broom)
+#估計回歸產生的output，即為dataframe，可進行mutate,select,filter
 ```
 
 ```{r} 
 tidy(model1) #要有library(broom)的套件才可使用
+#beta估計值
 ```
 
 ```{r} 
 augment(model1) #要有library(broom)的套件才可使用
+#具有yhat(fitted value)和ehat(residual)
 ```
 
 ```{r} 
 glance(model1) #要有library(broom)的套件才可使用
+#具有R-square和標準差估計值(s)
 ```
 
 ```{r}
