@@ -247,6 +247,7 @@ coeftest(model_1, vcov. = vcovHC, type="HC1") -> model_1_coeftest
 #vcovHC from "sandwich"，其中，HC:heteroscedasticity cross-section
 #"HC1"->內定的穩健度type
 coeftest(model_2, vcov. = vcovHC, type="HC1") -> model_2_coeftest
+#coeftest->此物件為矩陣
 
 #stargazer:1:可把表放在一起，modle1,modle2依係數排好
 stargazer(model_1, model_2, 
@@ -260,15 +261,20 @@ stargazer(model_1, model_2,
 tidy(model_1_coeftest)
 ```
 
+standard error : 原始作法，使用矩陣，因為#245~#249為矩陣形式
+```{r}
+stargazer(model_1, model_2, 
+          se=list(
+            model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
+          type="html",
+          align=TRUE)
+```
+
 tidy:為了使model1和model2的結果，以dataframe形式呈現，故進行tidy
+#tidy寫法(1) >用tidy存檔之後，再用"$"取出那一個column
 ```{r}
 tidy(model_1_coeftest)->model1CoeftestDF
 tidy(model_2_coeftest)->model2CoeftestDF
-```
-
-standard error : 原始作法，使用矩陣
-#tidy寫法(1) >用tidy存檔之後，再用"$"取出那一個column
-```{r}
 stargazer(model_1, model_2, 
         se=list(
           model1CoeftestDF$std.error,
@@ -287,7 +293,7 @@ stargazer(model_1, model_2,
 # 例如 按順序 -> f(5,3,2)表示f(x=5,y=3,z=2)或 不按順序 -> f(y=3,z=2,x=5)
 ```
 
-#tidy寫法(2)，直接用tidy以及"$"
+#standard error:tidy寫法(2)，直接用tidy以及"$"
 ```{r}
 stargazer(model_1, model_2, 
         se=list(
@@ -298,14 +304,6 @@ stargazer(model_1, model_2,
 #model_1_coeftest from #245係數檢定存取之名稱
 ```
 
-
-```{r}
-stargazer(model_1, model_2, 
-          se=list(
-            model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
-          type="html",
-          align=TRUE)
-```
 
 ## 模型比較
 
