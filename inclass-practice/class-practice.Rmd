@@ -206,7 +206,7 @@ journals %>%
 
  * tidy() #估計係數
  
- * augment() #
+ * augment() #每個樣本點可產生的配適值、殘差值...
   
  * glance() #報表診斷
 
@@ -236,17 +236,21 @@ journals %>%
 journals %>%
   lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model_2
 
-library(sandwich)
+library(sandwich) #求standard.error
 library(lmtest)
 library(stargazer)
 
 #使用vcovHC函數來計算HC1型的異質變異（即橫斷面資料下的線性迴歸模型）
 
 coeftest(model_1, vcov. = vcovHC, type="HC1") -> model_1_coeftest
+#coeftest:係數檢定from "lmtest"
+#vcovHC from "sandwich"，其中，HC:heteroscedasticity cross-section
+#"HC1"->內定的穩健度type
 coeftest(model_2, vcov. = vcovHC, type="HC1") -> model_2_coeftest
 
+#stargazer:1:可把表放在一起，modle1,modle2依係數排好
 stargazer(model_1, model_2, 
-          se=list(model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
+        se=list(model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
           type="html",
           align=TRUE)
 ```          
