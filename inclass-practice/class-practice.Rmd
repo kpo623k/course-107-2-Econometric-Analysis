@@ -262,7 +262,8 @@ tidy(model_1_coeftest)
 ```
 
 standard error : 原始作法，使用矩陣，因為#245~#249為矩陣形式
-```{r}
+```{r,results='asis'}
+#"results='asis'"->使網頁輸出時，有合適的表格，而非一大串文字
 stargazer(model_1, model_2, 
           se=list(
             model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
@@ -288,8 +289,8 @@ stargazer(model_1, model_2,
 
 #stand.error的來源，用"list"一個一個列上去
 
-# ?stargazer用法 -> "..."丟modle object
-# 有argument名稱，則不用照順序擺，若無argument名稱，則要按照順序擺放，詳情見help
+# ?stargazer用法 -> "..."丟modle object，ex. model_1,model_2...
+# 若有argument名稱，則不用照順序擺，若無argument名稱，則要按照順序擺放，詳情見help
 # 例如 按順序 -> f(5,3,2)表示f(x=5,y=3,z=2)或 不按順序 -> f(y=3,z=2,x=5)
 ```
 
@@ -302,6 +303,7 @@ stargazer(model_1, model_2,
         type="html",
         align=TRUE)
 #model_1_coeftest from #245係數檢定存取之名稱
+#align:字是否要對齊
 ```
 
 
