@@ -256,24 +256,48 @@ stargazer(model_1, model_2,
 ```          
 
 
-standard error : 原始作法，使用矩陣
 ```{r}
-stargazer(model_1, model_2, 
-          se=list(
-            model_1_coeftest[,"Std. Error"], model_2_coeftest[,2]),
-          type="html",   #html : 網頁形式
-          align=TRUE)  #list後要有括號  
-
-# ?stargazer:用法 -> "..."丟modle object
-# 有argument名稱，則不用照順序擺，若無argument名稱，則要按照順序擺放，詳情見help
-# 例如 按順序 -> f(5,3,2)表示f(x=5,y=3,z=2)或 不按順序 -> f(y=3,z=2,x=5)
+tidy(model_1_coeftest)
 ```
 
-standard error : tidy 1
+tidy:為了使model1和model2的結果，以dataframe形式呈現，故進行tidy
 ```{r}
 tidy(model_1_coeftest)->model1CoeftestDF
 tidy(model_2_coeftest)->model2CoeftestDF
 ```
+
+standard error : 原始作法，使用矩陣
+#tidy寫法(1) >用tidy存檔之後，再用"$"取出那一個column
+```{r}
+stargazer(model_1, model_2, 
+        se=list(
+          model1CoeftestDF$std.error,
+          model2CoeftestDF$std.error),
+        type="html",
+        align=TRUE) 
+
+#html : 網頁形式
+
+# stargaze:看前面有幾個模型要比較，就一直排下去 ex. model_1,model_2...
+
+#stand.error的來源，用"list"一個一個列上去
+
+# ?stargazer用法 -> "..."丟modle object
+# 有argument名稱，則不用照順序擺，若無argument名稱，則要按照順序擺放，詳情見help
+# 例如 按順序 -> f(5,3,2)表示f(x=5,y=3,z=2)或 不按順序 -> f(y=3,z=2,x=5)
+```
+
+#tidy寫法(2)，直接用tidy以及"$"
+```{r}
+stargazer(model_1, model_2, 
+        se=list(
+          tidy(model_1_coeftest)$std.error,
+          tidy(model_2_coeftest)$std.error),
+        type="html",
+        align=TRUE)
+#model_1_coeftest from #245係數檢定存取之名稱
+```
+
 
 ```{r}
 stargazer(model_1, model_2, 
