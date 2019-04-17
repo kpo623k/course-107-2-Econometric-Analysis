@@ -15,24 +15,72 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=T)
+library(dplyr)
+library(magrittr)
+library(AER)
+data("CigarettesSW")
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+CigarettesSW %<>% as_tibble
+CigarettesSW
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+CigarettesSW %<>% filter(year=="1995")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+CigarettesSW %<>% 
+  mutate(
+    rprice=price/cpi,
+    rincome=income/population/cpi,
+    tdiff=(taxs-tax)/cpi
+  )
+```
+
+```{r}
+model1 <- log(packs) ~ log(rprice) 
+model2 <- log(packs) ~ log(rprice) + log(rincome)
+```
+
+```{r}
+ols1<-lm(model1,CigarettesSW)
+ols2<-lm(model2,CigarettesSW)
+
+library(sandwich)
+library(lmtest)
+library(stargazer)
+
+#使用vcovHC函數來計算HC1型的異質變異（即橫斷面資料下的線性迴歸模型）
+coeftest(ols1, vcov. = vcovHC, type="HC1") -> ols1_coeftest
+coeftest(ols2, vcov. = vcovHC, type="HC1") -> ols2_coeftest
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
