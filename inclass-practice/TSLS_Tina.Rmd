@@ -196,18 +196,28 @@ class(tsls_1iv)
 
 
 ```{r}
+#用summary可看假設檢定完的結果
 summary(tsls_1iv)
 ```
 
 
 ```{r}
+#TSLS的假設檢定
+#若三項檢定(排他條件、相關性、遺漏變數偏誤OVB)的結果都要在表格中呈現，則要打 diagnostics = TRUE, df=Inf
+#自由度等於INFINITE (Inf)，是為了讓F-test的分母設定能infinite
 summary(tsls_1iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_1iv_tests
 summary(tsls_2iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_2iv_tests
+
+#呈現表格結果 (有存檔的呈現方式:直接打檔案名)
+tsls_1iv_tests
+
+tsls_2iv_tests
 ```
 
 
-Sargan: exclusiveness test
+#Sargan: exclusiveness test 排他檢定
 ```{r}
+#呈現表格結果 (沒存檔的呈現方式，用summary 如同#208)
 summary(tsls_1iv, vcov = sandwich, diagnostics = TRUE, df=Inf)
 ```
 
