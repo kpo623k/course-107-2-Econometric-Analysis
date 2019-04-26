@@ -18,10 +18,12 @@ knitr::opts_chunk$set(echo = TRUE, eval=T)
 ```
 
 ```{r}
-library(dplyr)
-library(magrittr)
-library(AER)
-data("CigarettesSW")
+library(dplyr) #資料處理
+library(magrittr) #串接
+library(AER) #TSLS來自AER
+data("CigarettesSW") #AER套件附帶的資料
+#有9個變數 (此資料之後可運用在pannel data)
+# %>%：串接，把變數丟到右邊第一個
 ```
 
 ```{r}
