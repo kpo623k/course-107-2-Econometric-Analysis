@@ -62,12 +62,14 @@ CigarettesSW %>% as_tibble() -> CigarettesSW
 ```
 
 ```{r}
+#若不用雙向串接
 CigarettesSW %>% 
   filter(year=="1995") -> 
   CigarettesSW
 ```
 
 ```{r}
+#使用雙向串接
 CigarettesSW %<>% filter(year=="1995")
 ```
 
