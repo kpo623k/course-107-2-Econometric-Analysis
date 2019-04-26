@@ -74,20 +74,34 @@ CigarettesSW %<>% filter(year=="1995")
 ```
 
 ```{r}
+#產生新變數
 CigarettesSW %>% 
   mutate(
     rprice=price/cpi,
     rincome=income/(population*cpi),
     tdiff=(taxs-tax)/cpi
   ) -> CigarettesSW
+
+CigarettesSW %<>% 
+  mutate(
+    rprice=price/cpi,
+    rincome=income/(population*cpi),
+    tdiff=(taxs-tax)/cpi
+  ) 
 ```
 
+
 ```{r}
-model1 <- log(packs) ~ log(rprice) 
+#取log做回歸
+#先將formula形式存起來
+#這些model都已經包含"常數項"
+model1 <- log(packs) ~ log(rprice) #簡單回歸
 model2 <- log(packs) ~ log(rprice) + log(rincome)
+#複回歸
 ```
 
 ```{r}
+#modle去掉常數項的兩種方法
 model1noConstant <- 
   log(packs) ~ log(rprince)+0
 model1noConstant2 <- 
