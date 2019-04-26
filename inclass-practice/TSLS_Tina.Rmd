@@ -165,15 +165,21 @@ stargazer(ols1_coeftest, ols2_coeftest,
 
 TSLS
 ```{r}
+#TSLS的ivreg回歸來自於library(AER)
+#iverg(formula,data)
+#用垂直號分隔工具變數群 (額外找的工具變數IV 以及 控制變數)
+#控制變數本身即為合理的IV
 tsls_1iv <- ivreg(
   log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff,
   data=CigarettesSW
   ) 
 
+#formula放的是回歸的東西，若在之前未(mutate)創造新變數，但又想在回歸內直接放入新變數，可用"I()"
 tsls_2iv <- ivreg(
   log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
   data=CigarettesSW
   )
+#有箭頭，則結果不會立刻顯示，只是把結果存起來
 ```
 
 
