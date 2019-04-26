@@ -116,10 +116,14 @@ class(model1)
 ```{r}
 ols1<-lm(model1,CigarettesSW)
 ols2<-lm(model2,CigarettesSW)
+ols1 #看ols1內容，或直接在console處打ols1
+ols2 #看ols2內容，或直接在console處打ols2
+#尚未做"異質變異"的調整
 ```
 
 
 ```{r}
+#異質變異的套件
 library(sandwich)
 library(lmtest)
 library(stargazer)
@@ -130,26 +134,33 @@ coeftest(ols2, vcov. = vcovHC, type="HC1") -> ols2_coeftest
 ```
 
 ```{r}
+#調整完後的結果
 ols1_coeftest
 ols2_coeftest
 ```
 
 ```{r}
-ols1
-ols1_coeftest
+ols1 #沒HC調整
+ols1_coeftest #有HC調整
+#由回歸表可看出有無HC(異質變異)調整，不影響係數 -> 做OLS正交投射，故係數值一樣
+#只有standard error有改變 (調整standard error)
 ```
 
 
 ```{r}
+#無調整的回歸
 library(stargazer)
 stargazer(ols1,ols2,type="html")
 ```
 
 ```{r, results="asis"}
+#有調整的回歸
+library(stargazer)
 stargazer(ols1_coeftest, ols2_coeftest, 
           se=list(ols1_coeftest[,"Std. Error"], ols2_coeftest[,2]),
           type="html",
           align=TRUE)
+#knit才看得出結果
 ```
 
 TSLS
