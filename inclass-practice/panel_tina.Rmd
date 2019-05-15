@@ -1,0 +1,25 @@
+---
+title: "panel_tina"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(magrittr)
+```
+
+```{r}
+library(readr)
+fatality <- read_csv("https://raw.githubusercontent.com/tpemartin/Econometric-Analysis/master/Part%20II/fatality.csv")
+```
+
+
+```{r}
+
+```
+
