@@ -16,10 +16,28 @@ library(magrittr)
 ```{r}
 library(readr)
 fatality <- read_csv("https://raw.githubusercontent.com/tpemartin/Econometric-Analysis/master/Part%20II/fatality.csv")
+#state:i
+#i=1一組，i=4一組.....
+#year:t
+#變數有無下標it由data判斷，電腦不會主動告知
 ```
 
+```{r}
+library(plm)
+```
 
 ```{r}
+class(fatality)
+#原本資料為dataframe，但dataframe沒有panel的概念，故要改變其類別
+```
 
+```{r}
+pdf_fatality<-pdata.frame(fatality,c("state","year"))
+#放入兩個變數名稱，第一個為i，第二個為t
+```
+
+```{r}
+class(pdf_fatality)
+#class要出現pdata.frame才可正確使用plm套件中的固定效果模型等等
 ```
 
