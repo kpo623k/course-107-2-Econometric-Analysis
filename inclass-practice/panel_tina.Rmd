@@ -117,11 +117,78 @@ demean_results %>%
   ggplot()+
   geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))+
   geom_smooth(aes(x=beertax_demean,y=mrall_demean),method = "lm",se=FALSE)
+#se：standard error，TRUE:95%信賴區間，其中TRUE或FALSE是全大寫
 ```
 
 ```{r}
-
+fatality %>% lm(data=., mrall~factor(state)) -> results
+# results$residuals 也會是demean的結果
 ```
+
+# 資料分析流程
+## 確定變數class
+```{r}
+fatality %>% 
+  mutate(state=as.factor(state),year=as.orered(year)) -> fatality
+#用mutate修正class，並存下來
+#之後再開始作圖及資料分析，這樣就不用在過程中一直處理轉換class的問題
+```
+
+##作圖
+
+##資料分析
+```{r}
+ls(mrall~beetrax+state, date=fatality)
+```
+
+
+```{r}
+model<-mrall~beertax
+```
+
+## plm
+
+```{r}
+pool1<-plm(model, data=fatality, model='pooling')
+summary(pool1)
+```
+
+
+```{r}
+re1<-plm(model, data=fatality, model='random')
+summary(re1)
+```
+
+```{r}
+fe1<-plm(model, data=fatality, model='within', effect='individual')
+summary(fe1)
+```
+
+```{r}
+fe2<-plm(model, data=fatality, model='within', effect='twoways')
+summary(fe2)
+```
+
+```{r, results="asis"}
+library(stargazer)
+stargazer(pool1,re1,fe1,fe2,type='html',
+          column.labels = c("Pooled OLS","RE","FE-individual","FE-two-ways"))
+#用stargazer作模型比較
+```
+
+```{r}
+phtest(fe1,re1)
+#在虛無假設(H_0)下，V_it與beertax_it無關 -> 可用FE、RE
+#在對立假設(H_1)下 -> 只可用 FE?
+```
+
+```{r}
+fatality %>%
+  plm(mrall~beertax+unrate, data=., method="within",effect = "individual")
+```
+
+
+
 
 
 
