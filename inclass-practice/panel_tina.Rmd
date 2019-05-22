@@ -107,12 +107,21 @@ fatality %>%
     mrall_demean=mrall-mean(mrall),
     beertax_demean=beertax-mean(beertax)
     ) %>%
-  select(mrall_demean,beertax_demean) %>%
+  select(mrall_demean,beertax_demean,state) %>%
   ungroup() -> demean_results # grouping variable會被保留
 
 ```
 
+```{r}
+demean_results %>%
+  ggplot()+
+  geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))+
+  geom_smooth(aes(x=beertax_demean,y=mrall_demean),method = "lm",se=FALSE)
+```
 
+```{r}
+
+```
 
 
 
