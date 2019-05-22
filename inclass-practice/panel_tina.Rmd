@@ -33,11 +33,15 @@ class(fatality)
 
 ```{r}
 pdf_fatality<-pdata.frame(fatality,c("state","year"))
-#放入兩個變數名稱，第一個為i，第二個為t
+#放入兩個變數名稱，第一個"state"為i，第二個"year"為t
 ```
 
 ```{r}
 class(pdf_fatality)
 #class要出現pdata.frame才可正確使用plm套件中的固定效果模型等等
+```
+
+```{r}
+
 ```
 
