@@ -76,7 +76,7 @@ library(psych)
 #select:選擇變數
 #mutate:新增變數
 #group_by:依照類變數分組，搭配
-#summarise:結果
+#summarise:結果(值)
 journals %>% 
   select(citeprice,subs) %>%
   pairs.panels()
@@ -158,7 +158,7 @@ journals %>%
 # 複迴歸模型
 
 ```{r}
-a<-NA #NA:不知道真相
+a <- NA #NA:不知道真相
 ```
 
 ```{r}
@@ -184,6 +184,8 @@ journals %>%
   lm(log(subs)~log(citeprice)+foundingyear,data=.) -> model2
 ```
 
+
+
 ##broom -> 估計迴歸產生的output
 >summary(model1):可看model1的迴歸表
  * tidy() #估計係數
@@ -198,6 +200,7 @@ library(broom)
 ```
 
 ```{r} 
+summary(model1)
 tidy(model1) #要有library(broom)的套件才可使用
 #beta估計值
 ```
@@ -269,7 +272,7 @@ stargazer(model_1, model_2,
 ```
 
 #standard error:tidy寫法(2)，直接用tidy以及"$"
-```{r}
+```{r results='asis'}
 stargazer(model_1, model_2, 
         se=list(
           tidy(model_1_coeftest)$std.error,
