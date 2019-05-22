@@ -1,0 +1,232 @@
+---
+title: "R for TSLS"
+author: "姓名"
+date: "3/6/2019"
+output: 
+  html_document: 
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=T)
+```
+
+```{r}
+library(dplyr) #資料處理套件
+library(magrittr) #串接套件
+library(AER) #TSLS來自AER套件
+data("CigarettesSW") #AER套件附帶的資料
+#有9個變數 (此資料之後可運用在pannel data)
+```
+
+```{r}
+class(CigarettesSW) #屬性判別
+#若物件屬性為data."frame" -> 表示任何和data有關的操作都可應用，若不是data.frame，則有些操作可能會行不通
+```
+
+as_tibble()
+#賦予class，或改變新的class，會用"as"，例如as_tibble()，是在改變其資料的class，或是增加其資料的特性
+```{r}
+# %>%：串接，把左邊的變數(input)丟到右邊函數的第一個
+CigarettesSW %>% as_tibble() -> CigarettesSW # 串接
+as_tibble(CigarettesSW) -> CigarettesSW # 非串接 
+#"->"：把原本的東西再存起來，取代原本的
+```
+
+as_tibble()
+#改變data.frame為tibble
+```{r}
+class(CigarettesSW)
+```
+
+```{r}
+CigarettesSW #看物件內容，直接打名稱
+#用tibble，看data會比較輕鬆
+```
+
+library(magrittr)
+```{r}
+CigarettesSW %<>% as_tibble()
+# %<>% 表示 串接，丟進去再丟回來
+# 和先 %^% 再 -> 的寫法一樣
+# 但是 "%<>%" 只有在使用 library(migritter)這個套件時，才能執行
+# ()：表示function，有一連串動作要執行，而不是只有一個物件內容
+
+CigarettesSW %>% as_tibble() -> CigarettesSW 
+```
+
+```{r}
+#若不用雙向串接
+CigarettesSW %>% 
+  filter(year=="1995") -> 
+  CigarettesSW
+```
+
+```{r}
+#使用雙向串接
+CigarettesSW %<>% filter(year=="1995")
+```
+
+```{r}
+#產生新變數
+CigarettesSW %>% 
+  mutate(
+    rprice=price/cpi,
+    rincome=income/(population*cpi),
+    tdiff=(taxs-tax)/cpi
+  ) -> CigarettesSW
+
+CigarettesSW %<>% 
+  mutate(
+    rprice=price/cpi,
+    rincome=income/(population*cpi),
+    tdiff=(taxs-tax)/cpi
+  ) 
+```
+
+
+```{r}
+#取log做回歸
+#先將formula形式存起來
+#這些model都已經包含"常數項"
+model1 <- log(packs) ~ log(rprice) #簡單回歸
+model2 <- log(packs) ~ log(rprice) + log(rincome)
+#複回歸
+```
+
+```{r}
+#modle去掉常數項的兩種方法
+model1noConstant <- 
+  log(packs) ~ log(rprince)+0
+model1noConstant2 <- 
+  log(packs) ~ log(rprince)-1
+```
+
+```{r}
+class(model1)
+```
+
+# OLS 
+```{r}
+ols1<-lm(model1,CigarettesSW)
+ols2<-lm(model2,CigarettesSW)
+ols1 #看ols1內容，或直接在console處打ols1
+ols2 #看ols2內容，或直接在console處打ols2
+#尚未做"異質變異"的調整
+```
+
+
+```{r}
+#異質變異的套件
+library(sandwich)
+library(lmtest)
+library(stargazer)
+
+#使用vcovHC函數來計算HC1型的異質變異（即橫斷面資料下的線性迴歸模型）
+lmtest::coeftest(ols1, vcov. = sandwich::vcovHC, type="HC1") -> ols1_coeftest
+coeftest(ols2, vcov. = vcovHC, type="HC1") -> ols2_coeftest
+```
+
+```{r}
+#調整完後的結果
+ols1_coeftest
+ols2_coeftest
+```
+
+```{r}
+ols1 #沒HC調整
+ols1_coeftest #有HC調整
+#由回歸表可看出有無HC(異質變異)調整，不影響係數 -> 做OLS正交投射，故係數值一樣
+#只有standard error有改變 (調整standard error)
+```
+
+
+```{r results="asis"}
+#無調整的回歸
+library(stargazer)
+stargazer(ols1,ols2,type="html")
+```
+
+```{r, results="asis"}
+#有調整的回歸
+library(stargazer)
+stargazer(ols1_coeftest, ols2_coeftest, 
+          se=list(ols1_coeftest[,"Std. Error"], ols2_coeftest[,2]),
+          type="html",
+          align=TRUE)
+#knit才看得出結果
+```
+
+
+TSLS
+```{r}
+#TSLS的ivreg回歸來自於library(AER)
+#iverg(formula,data)
+#用垂直號分隔工具變數群 (額外找的工具變數IV 以及 控制變數)
+#控制變數本身即為合理的IV
+tsls_1iv <- ivreg(
+  log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff,
+  data=CigarettesSW
+  ) 
+
+#formula放的是回歸的東西，若在之前未(mutate)創造新變數，但又想在回歸內直接放入新變數，可用"I()"
+tsls_2iv <- ivreg(
+  log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+  data=CigarettesSW
+  )
+#有箭頭，則結果不會立刻顯示，只是把結果存起來
+```
+
+
+```{r}
+library(broom)
+broom::glance(tsls_1iv)
+broom::augment(tsls_1iv)
+broom::tidy(tsls_1iv)
+```
+
+```{r}
+class(tsls_1iv)
+```
+
+
+```{r}
+#用summary可看假設檢定完的結果
+summary(tsls_1iv)
+```
+
+
+```{r}
+#TSLS的假設檢定
+#若三項檢定(排他條件、相關性、遺漏變數偏誤OVB)的結果都要在表格中呈現，則要打 diagnostics = TRUE, df=Inf
+#自由度等於INFINITE (Inf)，是為了讓F-test的分母設定能infinite
+summary(tsls_1iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_1iv_tests
+summary(tsls_2iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_2iv_tests
+
+#呈現表格結果 (有存檔的呈現方式:直接打檔案名)
+tsls_1iv_tests
+
+tsls_2iv_tests
+```
+
+
+#Sargan: exclusiveness test 排他檢定
+```{r}
+#呈現表格結果 (沒存檔的呈現方式，用summary 如同#208)
+summary(tsls_1iv, vcov = sandwich, diagnostics = TRUE, df=Inf)
+```
+
+```{r}
+summary(tsls_2iv, vcov = sandwich, diagnostics = TRUE, df=Inf)
+```
+
+```{r results="asis"}
+stargazer(tsls_1iv,tsls_2iv,type="html")
+```
+
