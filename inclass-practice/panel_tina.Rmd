@@ -144,6 +144,7 @@ pdf_fatality %>%
 
 #mutate:創造新變數->demean=原始變數資料-mean(變數資料)
 #先(分組)group_up，才能進行mutate，因為要用的是組的mean，而非全體的mean
+#group_by之後要記得ungroup，避免變數出現warning
 ```
 
 ```{r}
