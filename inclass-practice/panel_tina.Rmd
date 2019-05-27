@@ -277,6 +277,7 @@ fe2<-plm(model, data=pdf_fatality, model='within', effect='twoways')
 summary(fe2)
 ```
 
+模型比較
 ```{r, results="asis"}
 library(stargazer)
 stargazer(pool1,re1,fe1,fe2,type='html',
@@ -294,15 +295,3 @@ phtest(fe1,re1)
 pdf_fatality %>%
   plm(mrall~beertax+unrate, data=., method="within",effect = "individual")
 ```
-
-
-
-
-
-
-
-
-
-
-
-
