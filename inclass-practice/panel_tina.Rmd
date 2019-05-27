@@ -148,6 +148,34 @@ pdf_fatality %>%
 ```
 
 ```{r}
+#Demean 之後再畫一次離散圖
+# #133的結果存為demean_results，故資料來源data frame)為demean_results
+demean_results %>%
+  ggplot()+
+  geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))
+```
+
+```{r}
+#demean前
+pdf_fatality %>% 
+  filter(state==40) %>%
+  ggplot()+
+  geom_point(aes(x=beertax,y=I(mrall*1000),color=as.factor(state)),size=5)
+#size=5:不是透過mapping達到，用來放大點
+```
+
+
+```{r}
+#demean後
+demean_results %>%
+  filter(state==40) %>%
+  ggplot()+
+  geom_point(aes(x=beertax_demean,y=I(mrall_demean*1000),color=as.factor(state)),size=5)
+#size=5:不是透過mapping達到，用來放大點
+#(0,0)是demean後離散圖的中心點
+```
+
+```{r}
 demean_results %>%
   ggplot()+
   geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))+
