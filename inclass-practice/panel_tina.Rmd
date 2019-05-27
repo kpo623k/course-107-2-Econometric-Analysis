@@ -285,12 +285,15 @@ stargazer(pool1,re1,fe1,fe2,type='html',
 #用stargazer作模型比較
 ```
 
+
+Hausman Test
 ```{r}
 phtest(fe1,re1)
 #在虛無假設(H_0)下，V_it與beertax_it無關 -> 可用FE、RE
-#在對立假設(H_1)下 -> 只可用 FE?
+#在對立假設(H_1)下 -> 只可用 FE
 ```
 
+固定效果
 ```{r}
 pdf_fatality %>%
   plm(mrall~beertax+unrate, data=., method="within",effect = "individual")
