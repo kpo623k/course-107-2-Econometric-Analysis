@@ -176,6 +176,7 @@ demean_results %>%
 ```
 
 ```{r}
+#geom_smooth:根據(x,y)，畫一條平滑的預測母體平均線
 demean_results %>%
   ggplot()+
   geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))+
