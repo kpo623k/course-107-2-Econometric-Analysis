@@ -248,23 +248,28 @@ model<-mrall~beertax
 
 ## plm
 
+OLS:model="pooling"
 ```{r}
-#用plm估算
-fatality <- pdata.frame(fatality,c("state","year"))
-pool1<-plm(model, data=fatality, model='pooling')
+# 用plm估算
+# fatality<-pdata.frame(fatality,c("state","year"))
+pool1<-plm(model,data=pdf_fatality, model='pooling')
 summary(pool1)
 #data要為pdata.frame才可使用plm套件
 ```
 
 
+Random Effect:model="random"
 ```{r}
+#有前提&假設，才可使用random effect model
 re1<-plm(model, data=pdf_fatality, model='random')
 summary(re1)
 ```
 
+Fixed Effect:model="within"
 ```{r}
 fe1<-plm(model, data=pdf_fatality, model='within', effect='individual')
 summary(fe1)
+#effect可以做設定
 ```
 
 ```{r}
