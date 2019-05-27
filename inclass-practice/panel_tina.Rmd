@@ -155,6 +155,7 @@ demean_results %>%
   geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))
 ```
 
+demean前，第40州的圖
 ```{r}
 #demean前
 pdf_fatality %>% 
@@ -164,7 +165,7 @@ pdf_fatality %>%
 #size=5:不是透過mapping達到，用來放大點
 ```
 
-
+demean後，第40州的圖
 ```{r}
 #demean後
 demean_results %>%
@@ -181,9 +182,30 @@ demean_results %>%
   ggplot()+
   geom_point(aes(x=beertax_demean,y=mrall_demean,color=as.factor(state)))+
   geom_smooth(aes(x=beertax_demean,y=mrall_demean),method = "lm",se=FALSE)
-#se：standard error，TRUE:95%信賴區間，其中TRUE或FALSE是全大寫
+#若不寫method，則會是無母數回歸出來的結果，則為非線性關係
+#se：standard error，TRUE:會畫95%信賴區間，FALSE:不會畫出95%信賴區間，其中TRUE或FALSE是全大寫
 ```
 
+計算#179的圖的平滑母體回歸線其斜率
+```{r}
+#用demean之後的資料
+lm(mrall_demean~beertax_demean,data=demean_results) %>% summary()
+#其斜率為:-6.559e-05 (值負很小，是因為y軸沒有rescale，也就是y軸應該要為beertax_demean*1000)
+```
+
+
+使用Dummies，一次估算完
+```{r}
+#資料未使用demean
+lm(mrall~beertax+factor(state), data=pdf_fatality) %>% summary()
+#beertax其係數為-6.559e-05
+#固定效果模型在計量上有兩種做法
+#作法1:直接做Dummy Variables，一口氣估算完，不管有無demean，只要放夠多的虛擬變數即可
+#做法2:把X和Y變數全都demean之後，再去做回歸
+#state前面用factor()表示為"類"類別"變數，則應用軟體會自動創造足夠的dummy variables
+```
+
+使用Dummies，一次估算完
 ```{r}
 pdf_fatality %>% lm(data=., mrall~factor(state)) -> results
 # results$residuals 也會是demean的結果
