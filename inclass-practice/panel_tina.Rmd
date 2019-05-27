@@ -186,6 +186,12 @@ demean_results %>%
 #se：standard error，TRUE:會畫95%信賴區間，FALSE:不會畫出95%信賴區間，其中TRUE或FALSE是全大寫
 ```
 
+
+$$
+mrall_{it}-\bar{mrall}_i=\beta_0+\beta_1*(beertax_{it}-\bar{beertax}_i)+\epsilon_{it}
+$$
+↑ 兩邊變數都demean之後才做的線性回歸模型
+
 計算#179的圖的平滑母體回歸線其斜率
 ```{r}
 #用demean之後的資料
@@ -193,6 +199,11 @@ lm(mrall_demean~beertax_demean,data=demean_results) %>% summary()
 #其斜率為:-6.559e-05 (值負很小，是因為y軸沒有rescale，也就是y軸應該要為beertax_demean*1000)
 ```
 
+
+$$
+mrall_{it}=\sum_{j}\alpha_j Dj_i+\beta_1 beertax_{it}+\epsilon_{it}
+$$
+↑ LSDV去估計的$\beta_1$和demean估計的結果會一樣
 
 使用Dummies，一次估算完
 ```{r}
