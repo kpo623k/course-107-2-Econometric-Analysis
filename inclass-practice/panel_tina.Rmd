@@ -45,7 +45,7 @@ class(pdf_fatality)
 #各州啤酒稅（beertax）與車禍死亡率（mrall）
 library(dplyr)
 library(ggplot2)
-fatality %>% 
+pdf_fatality %>% 
   ggplot()+
   geom_point(aes(x=beertax,y=I(mrall*1000)))
 #ggplot2:形成canvas(畫布)
@@ -59,7 +59,7 @@ fatality %>%
 #非資料map出的顏色
 library(dplyr)
 library(ggplot2)
-fatality %>% 
+pdf_fatality %>% 
   ggplot()+
   geom_point(aes(x=beertax,y=I(mrall*1000)),color="blue")
 #blue(顏色)是美學的點的元素
@@ -74,7 +74,7 @@ mapping的color設定
 #把美學color放在aes裡面(放在美學的map function)
 library(dplyr)
 library(ggplot2)
-fatality %>% 
+pdf_fatality %>% 
   ggplot()+
   geom_point(aes(x=beertax,y=I(mrall*1000),color=state))
 #color由資料map得來(內建模式)，所以顏色不是自己指定的，而是由資料變數本身的"值"所指定
@@ -84,7 +84,7 @@ mapping的color設定
 ```{r}
 library(dplyr)
 library(ggplot2)
-fatality %>% 
+pdf_fatality %>% 
   ggplot()+
   geom_point(aes(x=beertax,y=I(mrall*1000),color=year))
 ```
@@ -102,7 +102,7 @@ fatality$state %>% class
 ```{r}
 library(dplyr)
 library(ggplot2)
-fatality %>% 
+pdf_fatality %>% 
   ggplot()+
   geom_point(aes(x=beertax,y=I(mrall*1000),color=as.factor(state)))
 #若只改class，則變數不需使用"I()"
@@ -111,16 +111,39 @@ fatality %>%
 ```
 
 ```{r}
+#shape -> 間斷
+#年份用不同形狀表示
+library(dplyr)
+library(ggplot2)
+pdf_fatality %>% 
+  ggplot()+
+  geom_point(aes(x=beertax,y=I(mrall*1000),shape=as.factor(year)))
+```
+
+```{r}
+#不同年用不同顏色畫離散圖
+#as.factor:class改為factor
+library(dplyr)
+library(ggplot2)
+pdf_fatality %>% 
+  ggplot()+
+  geom_point(aes(x=beertax,y=I(mrall*1000),color=as.factor(year)))
+```
+
+```{r}
 #組內差異，進行demean
-fatality %>% 
+pdf_fatality %>% 
   group_by(state) %>% #依state分組進行以下程序：
   mutate(
     mrall_demean=mrall-mean(mrall),
     beertax_demean=beertax-mean(beertax)
     ) %>%
   select(mrall_demean,beertax_demean,state) %>%
-  ungroup() -> demean_results # grouping variable會被保留
+  ungroup() -> demean_results
+#grouping variable會被保留
 
+#mutate:創造新變數->demean=原始變數資料-mean(變數資料)
+#先(分組)group_up，才能進行mutate，因為要用的是組的mean，而非全體的mean
 ```
 
 ```{r}
@@ -132,14 +155,14 @@ demean_results %>%
 ```
 
 ```{r}
-fatality %>% lm(data=., mrall~factor(state)) -> results
+pdf_fatality %>% lm(data=., mrall~factor(state)) -> results
 # results$residuals 也會是demean的結果
 ```
 
 # 資料分析流程
 ## 確定變數class
 ```{r}
-fatality %>% 
+pdf_fatality %>% 
   mutate(state=as.factor(state),year=as.orered(year)) -> fatality
 #用mutate修正class，並存下來
 #之後再開始作圖及資料分析，這樣就不用在過程中一直處理轉換class的問題
@@ -149,7 +172,7 @@ fatality %>%
 
 ##資料分析
 ```{r}
-ls(mrall~beetrax+state, date=fatality)
+ls(mrall~beetrax+state, date=pdf_fatality)
 ```
 
 
@@ -160,23 +183,23 @@ model<-mrall~beertax
 ## plm
 
 ```{r}
-pool1<-plm(model, data=fatality, model='pooling')
+pool1<-plm(model, data=pdf_fatality, model='pooling')
 summary(pool1)
 ```
 
 
 ```{r}
-re1<-plm(model, data=fatality, model='random')
+re1<-plm(model, data=pdf_fatality, model='random')
 summary(re1)
 ```
 
 ```{r}
-fe1<-plm(model, data=fatality, model='within', effect='individual')
+fe1<-plm(model, data=pdf_fatality, model='within', effect='individual')
 summary(fe1)
 ```
 
 ```{r}
-fe2<-plm(model, data=fatality, model='within', effect='twoways')
+fe2<-plm(model, data=pdf_fatality, model='within', effect='twoways')
 summary(fe2)
 ```
 
@@ -194,7 +217,7 @@ phtest(fe1,re1)
 ```
 
 ```{r}
-fatality %>%
+pdf_fatality %>%
   plm(mrall~beertax+unrate, data=., method="within",effect = "individual")
 ```
 
