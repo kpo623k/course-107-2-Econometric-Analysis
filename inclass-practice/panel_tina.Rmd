@@ -202,7 +202,7 @@ lm(mrall~beertax+factor(state), data=pdf_fatality) %>% summary()
 #固定效果模型在計量上有兩種做法
 #作法1:直接做Dummy Variables，一口氣估算完，不管有無demean，只要放夠多的虛擬變數即可
 #做法2:把X和Y變數全都demean之後，再去做回歸
-#state前面用factor()表示為"類"類別"變數，則應用軟體會自動創造足夠的dummy variables
+#state前面用factor()表示為"類別"變數，則應用軟體會自動創造足夠的dummy variables
 ```
 
 使用Dummies，一次估算完
