@@ -190,7 +190,7 @@ demean_results %>%
 $$
 mrall_{it}-\bar{mrall}_i=\beta_0+\beta_1*(beertax_{it}-\bar{beertax}_i)+\epsilon_{it}
 $$
-↑ 兩邊變數都demean之後才做的線性回歸模型
+↑ 兩邊變數都demean之後，才做的線性回歸模型
 
 計算#179的圖的平滑母體回歸線其斜率
 ```{r}
@@ -223,11 +223,13 @@ pdf_fatality %>% lm(data=., mrall~factor(state)) -> results
 ```
 
 # 資料分析流程
-## 確定變數class
+## 確定變數class正確性
 ```{r}
 pdf_fatality %>% 
-  mutate(state=as.factor(state),year=as.orered(year)) -> fatality
-#用mutate修正class，並存下來
+  mutate(state=as.factor(state),
+         year=as.ordered(year)) -> pdf_fatality
+#因為state和year並非我們所想要的class，所以用mutate修正class，並存下來
+#as.ordered表示可排序的
 #之後再開始作圖及資料分析，這樣就不用在過程中一直處理轉換class的問題
 ```
 
@@ -235,7 +237,8 @@ pdf_fatality %>%
 
 ##資料分析
 ```{r}
-ls(mrall~beetrax+state, date=pdf_fatality)
+#因為class已經做過修正，所以可直接使用回歸，不用再轉變class
+lm(mrall~beertax+state, data=pdf_fatality)
 ```
 
 
@@ -246,8 +249,11 @@ model<-mrall~beertax
 ## plm
 
 ```{r}
-pool1<-plm(model, data=pdf_fatality, model='pooling')
+#用plm估算
+fatality <- pdata.frame(fatality,c("state","year"))
+pool1<-plm(model, data=fatality, model='pooling')
 summary(pool1)
+#data要為pdata.frame才可使用plm套件
 ```
 
 
