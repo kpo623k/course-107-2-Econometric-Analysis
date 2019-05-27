@@ -111,14 +111,6 @@ fatality %>%
 ```
 
 ```{r}
-library(dplyr)
-library(ggplot2)
-fatality %>% 
-  ggplot()+
-  geom_point(aes(x=beertax,y=I(mrall*1000),color=as.factor("state")))
-```
-
-```{r}
 #組內差異，進行demean
 fatality %>% 
   group_by(state) %>% #依state分組進行以下程序：
