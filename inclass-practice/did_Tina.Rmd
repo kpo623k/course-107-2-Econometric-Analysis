@@ -1,0 +1,56 @@
+---
+title: "DID_Tina"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+```
+
+```{r}
+load(url("https://github.com/tpemartin/Econometric-Analysis/blob/master/data/public.rda?raw=true"))
+```
+
+```{r}
+publice %>% select(EMPFT,EMPPT,EM)
+```
+
+```{r}
+public %>%
+  mutate_at(
+    vars(EMPFT,EMPPT,EMPFT2,EMPPT2),
+    funs(as.numeric)
+    ) -> public  
+```
+
+```{r}
+public %>% 
+  group_by(STATE) %>% # 1 if NJ; 0 if Pa
+  summarise(mFT_before=mean(EMPFT,na.rm=T),
+            mPT_before=mean(EMPPT,na.rm=T),
+            mFT_after=mean(EMPFT2,na.rm=T),
+            mPT_after=mean(EMPPT2,na.rm=T)) %>%
+  ungroup ->
+  employment_change
+#group_by結束後要ungroup
+```
+
+```{r}
+library(kableExtra)
+employment_change %>% 
+  select(STATE,mFT_before,mFT_after) %>%
+  kable("html")
+```
+
+```{r}
+employment_change %>% 
+  select(STATE,mPT_before,mPT_after) %>%
+  kable("html")
+```
+
