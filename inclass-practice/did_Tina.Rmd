@@ -38,7 +38,9 @@ public %>%
             mPT_after=mean(EMPPT2,na.rm=T)) %>%
   ungroup ->
   employment_change
+#四個變數求取mean
 #group_by結束後要ungroup
+#計算結果存在employment_change
 ```
 
 ```{r}
@@ -46,6 +48,7 @@ library(kableExtra)
 employment_change %>% 
   select(STATE,mFT_before,mFT_after) %>%
   kable("html")
+#kable("html"):生成網頁形式
 ```
 
 ```{r}
@@ -53,4 +56,129 @@ employment_change %>%
   select(STATE,mPT_before,mPT_after) %>%
   kable("html")
 ```
+
+```{r}
+library(tidyr)
+```
+
+```{r}
+employment_FTchange <- employment_change %>%
+  select(mFT_before,mFT_after,STATE)
+
+employment_FTchange %>% kable("html")
+```
+
+```{r}
+employment_FTchange %>% 
+  filter(STATE==0) %>%
+  gather(type,employment,-STATE) -> EMFT0
+EMFT0
+
+employment_FTchange %>% 
+  filter(STATE==1) %>%
+  gather(type,employment,-STATE) -> EMFT1
+EMFT1
+
+EMFT<-rbind(EMFT0,EMFT1)
+EMFT
+```
+
+
+## 迴歸模型
+
+
+```{r}
+public %>% select(state,empft,empft2)
+```
+
+
+資料整理
+```{r}
+public %>% 
+  select(STATE,EMPFT,EMPFT2) %>%
+  group_by(STATE) %>%
+  gather(type,emp,-STATE) -> public2
+```
+
+```{r}
+lm(emp~STATE1+AFTER+PolicyImpact,data=public2)->DD_result
+DD_result
+```
+
+```{r}
+lm(emp~STATE1+AFTER+I(STATE1*AFTER),data=public2)
+DD_result
+```
+
+
+## factor()的應用
+
+```{r}
+lm(emp~STATE+AFTER,data=public2)
+#若沒特別說明，則此回歸會包含beta_0
+#創dummy variables是為了分類
+```
+
+
+```{r}
+lm(emp~factor(STATE)+factor(type),data=public2)
+```
+
+
+```{r}
+#交叉相乘(自己創造變數)
+lm(emp~STATE+AFTER+I(STATE1*AFTER),data=public2)
+```
+
+```{r}
+lm(emp~factor(STATE)+factor(type)+factor(STATE):factor(type),data=public2)
+#此時的兩個factor交叉相乘用分號(:)，而不是乘號(*)
+#否則應該要寫成:lm(emp~factor(STATE)*factor(type),data=public2)???
+```
+
+```{r}
+lm(emp~factor(STATE)*factor(type),data=public2)
+```
+
+```{r}
+library(clubSandwich)
+#為了作"聚類標準誤"的套件
+```
+
+```{r}
+public2 %>% 
+  mutate(cluster=factor(STATE):factor(type)) -> public2
+#群來自交叉項，故使用分號(:)????
+```
+
+```{r}
+public2$cluster %>% class
+public2$cluster %>% as.factor %>% levels
+#交叉出四類可能組合，故不用自己創造dummy
+```
+
+```{r}
+public2$cluster
+```
+
+```{r}
+coef_test(DD_result, vcov = "CR2", cluster = public2$cluster)
+#coeftesm來自於lmtest套件，coef_test來自clubsandwich套件，但兩者用法相同
+#注意此處的coef_test有底線
+#此處的Standard error才是正確的標準誤差，而係數不受standrd error(穩健度)調整的影響
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
 
