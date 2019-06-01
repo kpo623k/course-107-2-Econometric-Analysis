@@ -29,6 +29,10 @@ public %>%
 ```
 
 ```{r}
+#不同政策州的前後 (before/after)
+#計算平均員工數
+#利用州是否為1或0分兩群：group_by
+#分完群之後再計算"平均"(summarise)
 public %>% 
   group_by(STATE) %>% # 1 if NJ; 0 if Pa
   summarise(mFT_before=mean(EMPFT,na.rm=T),
@@ -43,17 +47,16 @@ public %>%
 ```
 
 ```{r}
+employment_change
+```
+
+```{r}
 library(kableExtra)
 employment_change %>% 
   select(STATE,mFT_before,mFT_after) %>%
   kable("html")
 #kable("html"):生成網頁形式
-```
-
-```{r}
-employment_change %>% 
-  select(STATE,mPT_before,mPT_after) %>%
-  kable("html")
+#employment_change有八個結果，只選了state中的mFT_before,mFT_after作呈現
 ```
 
 ```{r}
@@ -65,6 +68,7 @@ employment_FTchange <- employment_change %>%
   select(mFT_before,mFT_after,STATE)
 
 employment_FTchange %>% kable("html")
+#結果呈現：在政策實行前，NJ的雇用量較低；政策實行後，NJ雇用量上升，但不代表是最低工資促進就業上升的政策效果，故選擇PA來了解是否是大環境(非政策效果)變好的影響，但可能會發現大環境是變差，因為PA的雇用量下降，表示PA不但沒有因為最低工資提高而使就業量上升，而且PA沒有最低工資的變化，但卻使就業量更低
 ```
 
 ```{r}
