@@ -11,21 +11,20 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(magrittr)
 library(ggplot2)
-```
-
-```{r}
 load(url("https://github.com/tpemartin/Econometric-Analysis/blob/master/data/public.rda?raw=true"))
 ```
 
+
 ```{r}
-publice %>% select(EMPFT,EMPPT,EM)
+public %>% select(EMPFT,EMPPT,EMPFT2,EMPPT2)
+#看有興趣的變數，發現這些變數被當作是字串("chr")，則無法運算，故需要改變資料屬by mutate以轉換成數值
 ```
 
 ```{r}
 public %>%
   mutate_at(
     vars(EMPFT,EMPPT,EMPFT2,EMPPT2),
-    funs(as.numeric)
+    list(as.numeric)
     ) -> public  
 ```
 
