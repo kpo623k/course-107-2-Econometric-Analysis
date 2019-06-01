@@ -51,24 +51,36 @@ employment_change
 ```
 
 ```{r}
+#查看全職員工數
 library(kableExtra)
 employment_change %>% 
   select(STATE,mFT_before,mFT_after) %>%
   kable("html")
 #kable("html"):生成網頁形式
-#employment_change有八個結果，只選了state中的mFT_before,mFT_after作呈現
+#employment_change有八個結果，只選了state中的mFT_before,mFT_after作0呈現
+
+##結果呈現：在政策實行前，NJ的雇用量較低；政策實行後，NJ雇用量上升，但不代表是最低工資促進就業上升的政策效果，故選擇PA來了解是否是大環境(非政策效果)變好的影響，但可能會發現大環境是變差，因為PA的雇用量下降，表示PA不但沒有因為最低工資提高而使就業量上升，而且PA沒有最低工資的變化，但卻使就業量更低
 ```
+
+```{r}
+#查看兼職員工數
+employment_change %>% 
+  select(STATE,mPT_before,mPT_after) %>%
+  kable("html")
+```
+
+## 8-4繪圖
 
 ```{r}
 library(tidyr)
 ```
 
 ```{r}
+#只看全職員工數
 employment_FTchange <- employment_change %>%
   select(mFT_before,mFT_after,STATE)
 
 employment_FTchange %>% kable("html")
-#結果呈現：在政策實行前，NJ的雇用量較低；政策實行後，NJ雇用量上升，但不代表是最低工資促進就業上升的政策效果，故選擇PA來了解是否是大環境(非政策效果)變好的影響，但可能會發現大環境是變差，因為PA的雇用量下降，表示PA不但沒有因為最低工資提高而使就業量上升，而且PA沒有最低工資的變化，但卻使就業量更低
 ```
 
 ```{r}
@@ -86,21 +98,66 @@ EMFT<-rbind(EMFT0,EMFT1)
 EMFT
 ```
 
+```{r}
+EMFT %>% 
+  ggplot() +
+  geom_point(aes(x=type,y=employment,color=STATE))+
+  geom_line(aes(x=type,y=employment,group=STATE,color=STATE))
+```
+
+```{r}
+#更改變數屬性
+EMFT %>% mutate(
+  type=ordered(type,levels=c("mFT_before","mFT_after")),
+  STATE=factor(STATE,labels=c("PA","NJ"))
+  ) -> EMFTfinal
+```
+
+```{r}
+#修改屬性後的圖形
+EMFTfinal %>% 
+  ggplot() +
+  geom_point(aes(x=type,y=employment,color=STATE))+
+  geom_line(aes(x=type,y=employment,group=STATE,color=STATE))
+```
+
 
 ## 迴歸模型
 
 
 ```{r}
-public %>% select(state,empft,empft2)
-```
+#資料整理前的結果
+public %>% select(STATE,EMPFT,EMPFT2)
+#資料變數名稱要大寫
+#想把EMPFT以及EMPFT2轉換成為EMPFT和t兩個column的變數 (一筆資料變成兩筆)
+#每一筆資料依照變數名稱堆疊起來
 
+#考試不考資料整理
+```
 
 資料整理
 ```{r}
+#做DID，尚未控制任何變數
 public %>% 
   select(STATE,EMPFT,EMPFT2) %>%
   group_by(STATE) %>%
   gather(type,emp,-STATE) -> public2
+
+#資料整理完的結果
+public2
+
+#結果呈現：資料未處理前的EMPFT值直接堆疊至emp，新創的變數名稱為type，type裡面的所有變數都是EMPTF的堆疊，表示為最低工資提高前的值
+```
+
+產生虛擬變數
+```{r}
+#
+public2 %>%
+  mutate(
+    STATE1=(STATE==1),
+    AFTER=(type=="EMPFT2"),
+    PolicyImpact=STATE1*AFTER
+  ) -> public2
 ```
 
 ```{r}
