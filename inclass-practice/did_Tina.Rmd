@@ -146,28 +146,43 @@ public %>%
 #資料整理完的結果
 public2
 
-#結果呈現：資料未處理前的EMPFT值直接堆疊至emp，新創的變數名稱為type，type裡面的所有變數都是EMPTF的堆疊，表示為最低工資提高前的值
+#結果呈現：資料未處理前的EMPFT值直接堆疊至emp，新創的變數名稱為type，type裡面的所有變數都是EMPTF的堆疊，表示為最低工資提高前的值，後面堆疊的是EMPTF2的值一直堆疊下去
+```
+
+```{r}
+head(public2)
+#type有時間意涵，若變數為EMPFT則代表政策前，EMPFT2則代表政策後
 ```
 
 產生虛擬變數
 ```{r}
-#
+#public2原本只有State type emp這三欄，創造新變數(dummy variable)
 public2 %>%
   mutate(
     STATE1=(STATE==1),
     AFTER=(type=="EMPFT2"),
     PolicyImpact=STATE1*AFTER
   ) -> public2
+
+public2
+
+#創造state dummy：D1 (state1)
+#政策後的dummy: (after)
+#程式語言中，logical的True or False，若拿來當成數學運算，True會被當作1；False會被當作0來處理 (例:PolicyImpact的結果)
 ```
 
+DD估計
 ```{r}
+#產生D1(STATE1)和B1(AFTER)之後，進行線性回歸
 lm(emp~STATE1+AFTER+PolicyImpact,data=public2)->DD_result
 DD_result
+#結果：最低工資的提高會造成每家餐廳全職就業量提升3.362個員工 -> 此結果有點不合理，表示有很多變數尚未被控制住
+#缺點：lm跑出來的結果非調整後的標準誤差，而是古典假設的結果->處理cluster(聚類標準誤)之問題
 ```
 
 ```{r}
+#若不先創造一個PolicyImpact，而選擇在回歸時才加入此變數，利用I()創造此變數
 lm(emp~STATE1+AFTER+I(STATE1*AFTER),data=public2)
-DD_result
 ```
 
 
