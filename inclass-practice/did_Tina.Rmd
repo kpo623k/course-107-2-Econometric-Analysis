@@ -234,33 +234,43 @@ lm(emp~factor(STATE)+factor(type)+factor(STATE):factor(type),data=public2)
 lm(emp~factor(STATE)*factor(type),data=public2)
 ```
 
-聚類標準誤差
+
+
+## 聚類標準誤差 clubSandwich
+
 ```{r}
 library(clubSandwich)
 #為了作"聚類標準誤"的套件
 ```
 
 ```{r}
+#若要做聚類標準誤的調整，則先要創造出"群" (把每一筆資料先標上是哪一群)
 public2 %>% 
   mutate(cluster=factor(STATE):factor(type)) -> public2
-#群來自交叉項，故使用分號(:)????
+public2
+#此"群"來自於兩個變數的交叉項，故使用factor的分號(:)相乘，交叉出4個可能的cluster
 ```
 
 ```{r}
 public2$cluster %>% class
 public2$cluster %>% as.factor %>% levels
-#交叉出四類可能組合，故不用自己創造dummy
+#交叉出四類可能組合，故不用自己創造dummy，程式會自動依照factor有幾類去創造應該有的dummy
 ```
 
 ```{r}
 public2$cluster
+#STATE的值有0或1
+#TYPE的值有EMPFT或EMPFT2
+#故總共會有4種交叉類型的可能
 ```
 
+OLS估算完之後要進行標準誤調整
+OLS結果為DD_result
 ```{r}
 coef_test(DD_result, vcov = "CR2", cluster = public2$cluster)
-#coeftesm來自於lmtest套件，coef_test來自clubsandwich套件，但兩者用法相同
+#coeftesm來自於lmtest套件，coef_test來自clubsandwich套件，但兩者用法實際上相同
 #注意此處的coef_test有底線
-#此處的Standard error才是正確的標準誤差，而係數不受standrd error(穩健度)調整的影響
+#此處的Standard error才是合理的標準誤差(穩健標準誤的調整)，而係數不受standrd error(穩健度)調整的影響
 ```
 
 
