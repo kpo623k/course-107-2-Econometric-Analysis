@@ -274,14 +274,29 @@ coef_test(DD_result, vcov = "CR2", cluster = public2$cluster)
 ```
 
 
+## Panel:Fixted effect
 ```{r}
+library(plm)
+```
 
+```{r}
+library(readr)
+fatality <- read_csv("https://raw.githubusercontent.com/tpemartin/Econometric-Analysis/master/Part%20II/fatality.csv")
+```
+
+```{r}
+fatality<-pdata.frame(fatality,c("state","year"))
+```
+
+```{r}
+fe1<-plm(mrall~beertax, data=fatality, model='within', effect='individual')
+summary(fe1)
 ```
 
 
-
-
-
+```{r}
+coef_test(fe1, vcov = "CR2", cluster = fatality$state)
+```
 
 
 
