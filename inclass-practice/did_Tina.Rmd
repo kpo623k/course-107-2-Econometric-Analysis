@@ -189,29 +189,48 @@ lm(emp~STATE1+AFTER+I(STATE1*AFTER),data=public2)
 ## factor()的應用
 
 ```{r}
-lm(emp~STATE+AFTER,data=public2)
+lm(emp~factor(STATE)*factor(type),data=public2)
+#在類別資料裡面，若不想要自己創造dummy variable，可使用factor()，讓程式自己判斷變數為"類別"
+```
+
+factor()應用的例子
+```{r}
+lm(emp~STATE1+AFTER,data=public2)
 #若沒特別說明，則此回歸會包含beta_0
 #創dummy variables是為了分類
 ```
 
 
 ```{r}
+#和程式R講說此兩個變數(STATE以及TYPE)是用來分類:應用factor宣告
 lm(emp~factor(STATE)+factor(type),data=public2)
+#控制state和type
+#跑出來的結果和#197的結果一樣，但#204的回歸變數是用來分類
+
+#程式(R)只要知道其為"類別變數"，則程式會依據有幾類去做調整(電腦幫忙創造dummy variable之概念)
 ```
 
 
+有交叉項
 ```{r}
-#交叉相乘(自己創造變數)
-lm(emp~STATE+AFTER+I(STATE1*AFTER),data=public2)
+#交叉相乘(用I()自己創造變數，兩個dummy交叉相乘，沒有factor宣告之情形)
+lm(emp~STATE1+AFTER+I(STATE1*AFTER),data=public2)
+#變數使用的是dummy varibale:STATE1以及AFTER
 ```
+
 
 ```{r}
 lm(emp~factor(STATE)+factor(type)+factor(STATE):factor(type),data=public2)
+#有factor宣告的兩個dummy交叉相乘，其符號為分號，而非兩個factor用乘號相乘在一起
 #此時的兩個factor交叉相乘用分號(:)，而不是乘號(*)
-#否則應該要寫成:lm(emp~factor(STATE)*factor(type),data=public2)???
+
+#若factor用"乘號(*)"相乘，則表示個別效果再加上交叉相乘效果，例如lm(emp~factor(STATE)+factor(type)+factor(STATE):factor(type),data=public2)寫法會等同於lm(emp~factor(STATE)*factor(type),data=public2)
+
+#變數使用的是尚未被分類的原本變數(非dummy，是利用factor宣告後才成為dummy):STATE以及TYPE
 ```
 
 ```{r}
+#223的另種寫法
 lm(emp~factor(STATE)*factor(type),data=public2)
 ```
 
