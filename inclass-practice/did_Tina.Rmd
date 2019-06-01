@@ -234,6 +234,7 @@ lm(emp~factor(STATE)+factor(type)+factor(STATE):factor(type),data=public2)
 lm(emp~factor(STATE)*factor(type),data=public2)
 ```
 
+聚類標準誤差
 ```{r}
 library(clubSandwich)
 #為了作"聚類標準誤"的套件
